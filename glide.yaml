@@ -1,0 +1,8 @@
+package: .
+import:
+- package: github.com/Shopify/sarama
+  version: v1.22.0
+- package: github.com/bsm/sarama-cluster
+  version: v2.1.15
+- package: github.com/nsqio/go-nsq
+  version: v1.0.7
