@@ -27,34 +27,62 @@ import (
 	"fmt"
 	"stream-client/kafka"
 	"github.com/Shopify/sarama"
+	cluster "github.com/bsm/sarama-cluster"
+)
+
+package kafka_test
+
+import (
+	"fmt"
+	"stream-client/kafka"
+	"testing"
+	"time"
+
+	"github.com/Shopify/sarama"
+	cluster "github.com/bsm/sarama-cluster"
 )
 
 func main() {
 	// consumer
-	consumer, err := kafka.NewConsumer([]string{"127.0.0.1:9092"}, []string{"topic_1"}, "group")
+	config := cluster.NewConfig()
+	config.Consumer.Return.Errors = true
+	config.Group.Return.Notifications = true
+	consumer, err := kafka.NewConsumer([]string{"127.0.0.1:9092"}, []string{"topic_1"}, "group", config)
 	if err != nil {
 		fmt.Println("New kafka consumer error:", err)
 		return
 	}
 	consumer.Subscribe()
 	// recv message
-	for {
-		msg, _ := consumer.Recv()
-		consumer.MarkOffset(msg)
-	}
+	go func() {
+		for {
+			msg, _ := consumer.Recv()
+			fmt.Println("recv message:", string(msg.Value))
+			consumer.MarkOffset(msg)
+		}
+	}()
 
 	// producer
-	config := sarama.NewConfig()
-	config.Producer.Retry.Max = 5
-	config.Producer.Retry.Backoff = time.Minute*3
-	producer, err := kafka.NewProducer([]string{"127.0.0.1:9092"}, config)
+	producerConfig := sarama.NewConfig()
+	producerConfig.Producer.Retry.Max = 5
+	producerConfig.Producer.Retry.Backoff = time.Minute * 3
+	producer, err := kafka.NewProducer([]string{"127.0.0.1:9092"}, producerConfig)
 	if err != nil {
 		fmt.Println("New kafka producer error:", err)
 		return
 	}
-	producer.Setup("topic")
-	// send message
-	producer.Send() <- []byte("message")
+	producer.Setup("topic_1")
+	defer producer.Destroy()
+	defer consumer.Destroy()
+	ticker := time.NewTicker(time.Second * 5)
+	sendCount := 0
+	for _ = range ticker.C {
+		msgStr := fmt.Sprintf("%d", sendCount)
+		// send message
+		producer.Send() <- []byte(msgStr)
+		sendCount++
+		fmt.Printf("send message count: %v,%v\n", sendCount, time.Now())
+	}
 }
 
 ```

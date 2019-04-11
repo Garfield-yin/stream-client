@@ -1,6 +1,7 @@
 package kafka
 
 import (
+	"errors"
 	"fmt"
 
 	"stream-client/common/logger"
@@ -23,12 +24,10 @@ type Consumer struct {
 	done     chan bool
 }
 
-func NewConsumer(brokers []string, topics []string, group string) (*Consumer, error) {
-	config := cluster.NewConfig()
+func NewConsumer(brokers []string, topics []string, group string, config *cluster.Config) (*Consumer, error) {
 	logger.Info.Println("kafka consumer brokers:", brokers)
 	config.Consumer.Return.Errors = true
 	config.Group.Return.Notifications = true
-
 	consumer, err := cluster.NewConsumer(brokers, group, topics, config)
 	if err != nil {
 		return nil, err
@@ -57,8 +56,11 @@ func (k *Consumer) Subscribe() error {
 }
 
 func (k *Consumer) Recv() (*sarama.ConsumerMessage, error) {
-	msg := <-k.consumer.Messages()
-	return msg, nil
+	msg, ok := <-k.consumer.Messages()
+	if ok {
+		return msg, nil
+	}
+	return msg, errors.New("null message")
 }
 
 func (k *Consumer) MarkOffset(msg *sarama.ConsumerMessage) {
