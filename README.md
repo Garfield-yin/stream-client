@@ -26,6 +26,7 @@ package main
 import (
 	"fmt"
 	"stream-client/kafka"
+	"github.com/Shopify/sarama"
 )
 
 func main() {
@@ -43,7 +44,10 @@ func main() {
 	}
 
 	// producer
-	producer, err := kafka.NewProducer("127.0.0.1", 9092)
+	config := sarama.NewConfig()
+	config.Producer.Retry.Max = 5
+	config.Producer.Retry.Backoff = time.Minute*3
+	producer, err := kafka.NewProducer([]string{"127.0.0.1:9092"}, config)
 	if err != nil {
 		fmt.Println("New kafka producer error:", err)
 		return

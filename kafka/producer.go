@@ -1,8 +1,6 @@
 package kafka
 
 import (
-	"fmt"
-
 	"github.com/Shopify/sarama"
 )
 
@@ -13,11 +11,10 @@ type Producer struct {
 	done     chan bool
 }
 
-func NewProducer(host string, port uint64) (*Producer, error) {
-	addRess := fmt.Sprintf("%s:%d", host, port)
-	config := sarama.NewConfig()
-
-	producer, err := sarama.NewAsyncProducer([]string{addRess}, config)
+func NewProducer(brokers []string, config *sarama.Config) (*Producer, error) {
+	//config := sarama.NewConfig()
+	//config.Producer.Retry.Max = 5
+	producer, err := sarama.NewAsyncProducer(brokers, config)
 	if err != nil {
 		return nil, err
 	}
