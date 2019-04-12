@@ -1,4 +1,6 @@
 package: .
+ignore:
+- stream-client/common/logger
 import:
 - package: github.com/Shopify/sarama
   version: v1.22.0
