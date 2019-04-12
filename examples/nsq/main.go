@@ -17,7 +17,7 @@ func main() {
 	go func() {
 		for {
 			msg, _ := consumer.Recv()
-			fmt.Println("recv message:", msg)
+			fmt.Println("recv message:", string(msg))
 		}
 	}()
 
@@ -27,13 +27,13 @@ func main() {
 		fmt.Println("New nsq  producer error:", err)
 		return
 	}
-	producer.Setup("test_topic")
+	producer.Setup("test_topic", time.Second*5, true)
 	defer producer.Destroy()
 	defer consumer.Destroy()
 
 	// send message,仅支持PublishAsync,后期改善
 	sendCount := 0
-	ticker := time.NewTicker(time.Second * 5)
+	ticker := time.NewTicker(time.Second * 1)
 	for _ = range ticker.C {
 		msgStr := fmt.Sprintf("%d", sendCount)
 		// send message
