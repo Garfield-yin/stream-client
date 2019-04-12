@@ -1,10 +1,10 @@
-hash: 75d2c0821340b41031b31ab319c083c7422cffbb28c84df422cb947f6f7d9b84
-updated: 2019-04-10T10:39:22.631679+08:00
+hash: eb523fc7df86ed896a1cccf15ffb01de5a934d83974b04e77c98d6daa1f7604e
+updated: 2019-04-12T19:17:52.365683+08:00
 imports:
 - name: github.com/bsm/sarama-cluster
   version: c618e605e15c0d7535f6c96ff8efbb0dba4fd66c
 - name: github.com/DataDog/zstd
-  version: 1e382f59b41eebd6f592c5db4fd1958ec38a0eba
+  version: 69c5189b6513b1503c9c5332fb2e96362e51d547
 - name: github.com/davecgh/go-spew
   version: d8f796af33cc11cb798c1aaeb27a4ebc5099927d
   subpackages:
@@ -30,7 +30,7 @@ imports:
 - name: github.com/Shopify/sarama
   version: 5d2af84cf5e2dd36f2daecaaafa13c4e286f20fd
 - name: golang.org/x/net
-  version: 74de082e2cca95839e88aa0aeee5aadf6ce7710f
+  version: eb5bcb51f2a31c7d5141d810b70815c05d9c9146
   subpackages:
   - internal/socks
   - proxy

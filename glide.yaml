@@ -1,4 +1,4 @@
-package: .
+package: stream-client
 ignore:
 - stream-client/common/logger
 import:
