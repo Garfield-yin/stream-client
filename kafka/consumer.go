@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"stream-client/common/logger"
-
 	"github.com/Shopify/sarama"
 	cluster "github.com/bsm/sarama-cluster"
 )
@@ -25,7 +23,6 @@ type Consumer struct {
 }
 
 func NewConsumer(brokers []string, topics []string, group string, config *cluster.Config) (*Consumer, error) {
-	logger.Info.Println("kafka consumer brokers:", brokers)
 	config.Consumer.Return.Errors = true
 	config.Group.Return.Notifications = true
 	consumer, err := cluster.NewConsumer(brokers, group, topics, config)
@@ -48,7 +45,7 @@ func (k *Consumer) Subscribe() error {
 	}()
 	go func() {
 		for err := range k.consumer.Errors() {
-			logger.Error.Printf("Error: %s\n", err.Error())
+			fmt.Printf("Error: %s\n", err.Error())
 			k.errors <- err
 		}
 	}()
