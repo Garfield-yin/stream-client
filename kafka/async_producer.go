@@ -46,6 +46,11 @@ func (k *AsyncProducer) Send(topic string, message []byte) {
 	k.producer.Input() <- &sarama.ProducerMessage{Topic: topic, Key: nil, Value: sarama.ByteEncoder(message)}
 }
 
+func (k *AsyncProducer) SendRawMsg(msg *sarama.ProducerMessage) {
+	k.producer.Input() <- msg
+
+}
+
 func (k *AsyncProducer) Destroy() {
 	k.producer.Close()
 }
