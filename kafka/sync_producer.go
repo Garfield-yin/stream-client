@@ -29,6 +29,11 @@ func (k *SyncProducer) SendRawMsg(msg *sarama.ProducerMessage) (partition int32,
 	return pid, offset, err
 }
 
+func (k *SyncProducer) SendRawMsgs(msgs []*sarama.ProducerMessage) (err error) {
+	err = k.producer.SendMessages(msgs)
+	return err
+}
+
 func (k *SyncProducer) Destroy() {
 	k.producer.Close()
 }
